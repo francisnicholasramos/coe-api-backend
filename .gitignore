@@ -6,3 +6,5 @@ node_modules/
 
 # ctags
 tags
+
+/src/generated/prisma
