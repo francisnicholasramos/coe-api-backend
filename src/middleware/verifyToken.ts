@@ -15,9 +15,9 @@ export const verifyToken: RequestHandler = async (req, res, next) => {
             req.user = { id: decoded.id };
             next()
         } catch(err) {
-            res.sendStatus(401)
+            return res.sendStatus(401)
         }
     } else {
-        res.sendStatus(403);
+        return res.sendStatus(403);
     }
 }
