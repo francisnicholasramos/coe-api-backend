@@ -1,18 +1,40 @@
 import type {RequestHandler} from "express";
 import {createUser} from "../users/local-users.repository";
+import {generateToken} from "../utils/generateToken";
 import prisma from "../database/prismaClient";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
 
-export const postSignUp: RequestHandler = async (req, res) => {
+export const signup: RequestHandler = async (req, res) => {
     try {
         const {username, email, password} = req.body;
+
+        const userExists = await prisma.user.findUnique({
+            where: {username: username}
+        })
+
+        if (userExists) {
+            return res
+                .status(400)
+                .json({message: "Username already exists."})
+        }
+
+        const emailExists = await prisma.user.findUnique({
+            where: {email: email}
+        })
+
+        if (emailExists) {
+            return res
+                .status(400)
+                .json({message: "User already exists with this email."})
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10)
 
         await createUser(username, hashedPassword, email)
 
         res.status(201).json({
+            status: "success",
             message: "User created successfully."
         })
     } catch (err) {
@@ -24,24 +46,40 @@ export const login: RequestHandler = async (req, res) => {
     try {
         const {username, password} = req.body
 
-        const validateUser = await prisma.user.findUnique({where: {username}})
+        const user = await prisma.user.findUnique({
+            where: {username}
+        })
 
-        if (!validateUser) return res.status(404).json({message: "User does not exist."})
+        if (!user) {
+            return res.status(404).json({message: "Invalid email or password."})
+        }
 
-        const match = await bcrypt.compare(password, validateUser.password)
+        const isPasswordValid = await bcrypt.compare(password, user.password)
 
-        if (!match) return res.status(401).json({message: "Incorrect password."})
+        if (!isPasswordValid) {
+            return res.status(401).json({message: "Invalid email or password."})
+        }
         
-        const user = validateUser;
+        const token = generateToken(user.id, res)
 
-        const token = jwt.sign({sub: user.id}, process.env.JWT_SECRET as string, {expiresIn: "1h"})
-
-        res.json({
-            token: token
+        res.status(201).json({
+            status: "success",
+            token
         })
     } catch (err) {
         res.status(500).json({
             message: "Internal Server Error."
         })
     }
+}
+
+export const logout: RequestHandler = async (req, res) => {
+    res.cookie("jwt", "", {
+        httpOnly: true,
+        expires: new Date(0)
+    }),
+    res.status(200).json({
+        status: "success",
+        message: "Logged out successfully."
+    })
 }

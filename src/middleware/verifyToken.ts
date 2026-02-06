@@ -12,7 +12,7 @@ export const verifyToken: RequestHandler = async (req, res, next) => {
 
         try {
             const decoded = jwt.verify(bearerToken, process.env.JWT_SECRET as string) as JwtPayload
-            req.user = { id: decoded.sub };
+            req.user = { id: decoded.id };
             next()
         } catch(err) {
             res.sendStatus(401)

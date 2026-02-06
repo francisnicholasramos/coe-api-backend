@@ -1,12 +1,15 @@
 import Router from "express";
-import {postSignUp, login} from "./auth.controller";
+import {signup, login, logout} from "./auth.controller";
 
 const router = Router();
 
 router.route("/signup")
-      .post(postSignUp)
+      .post(signup)
 
 router.route("/login")
       .post(login)
+
+router.route("/logout")
+      .post(logout)
 
 export default router;
