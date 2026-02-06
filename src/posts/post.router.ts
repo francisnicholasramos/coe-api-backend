@@ -6,8 +6,22 @@ const router = Router();
 
 const post = new PostController;
 
-router.post("/posts", 
-            verifyToken,
-            post.uploadPost)
+router.post(
+    "/posts", 
+    verifyToken,
+    post.uploadPost
+)
+
+router.put(
+    "/posts/:postId",
+    verifyToken,
+    post.updatePost
+)
+
+router.delete(
+    "/posts/:postId", 
+    verifyToken,
+    post.deletePost
+)
 
 export default router;
