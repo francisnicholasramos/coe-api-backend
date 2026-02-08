@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -13,41 +7,45 @@ datasource db {
   provider = "postgresql"
 }
 
-enum ROLE {
-    USER
-    ADMIN
-}
-
 model User {
-    id          String      @id @default(uuid())
-    email       String      @unique
-    username    String      @unique
-    password    String
-    posts       Post[]
+  id       String @id @default(uuid())
+  username String @unique
+  password String
+  email    String @unique
+  posts    Post[]
 
-    @@map("users")
+  @@map("users")
 }
 
 model Post {
-    id          String      @id @default(uuid())
-    title       String
-    content     String?
-    comments    Comment[]
-    published   Boolean     @default(false)
+  id        String    @id @default(uuid())
+  title     String
+  content   String?
+  published Boolean   @default(false)
+  userId    String
+  comments  Comment[]
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-    userId      String      
-    
-    @@map("posts")
+  @@map("posts")
 }
 
 model Comment {
-    id          String      @id @default(uuid())
-    content     String
-    username    String?
+  id       String  @id @default(uuid())
+  content  String
+  username String?
+  postId   String
+  type     CommentType
+  post     Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
 
-    postId      String
-    post        Post        @relation(fields: [postId], references: [id], onDelete: Cascade)
+  @@map("comments")
+}
 
-    @@map("comments")
+enum ROLE {
+  USER
+  ADMIN
+}
+
+enum CommentType {
+  PUBLIC
+  PRIVATE
 }
