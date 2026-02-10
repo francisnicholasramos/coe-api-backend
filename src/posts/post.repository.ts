@@ -1,4 +1,4 @@
-import prisma from "./prismaClient";
+import prisma from "../database/prismaClient";
 
 export const createPost = async (
     title: string,
@@ -31,9 +31,6 @@ export const updatePostById = async (
         }
     })
 }
-
-export const getUserById = async (id: string) =>
-    prisma.user.findUnique({where: {id}})
 
 export const deletePostById = async (id: string) => {
     return prisma.post.delete({

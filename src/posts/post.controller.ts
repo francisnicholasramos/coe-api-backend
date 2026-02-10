@@ -3,7 +3,7 @@ import {createPost,
         getPostById, 
         updatePostById,
         deletePostById
-} from "../database/blog.repository";
+} from "./post.repository";
 
 export class PostController {
     // upload post
