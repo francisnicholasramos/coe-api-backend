@@ -13,6 +13,7 @@ model User {
   password String
   email    String @unique
   posts    Post[]
+  comments Comment[]
 
   @@map("users")
 }
@@ -26,17 +27,22 @@ model Post {
   comments  Comment[]
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
   @@map("posts")
 }
 
 model Comment {
   id       String  @id @default(uuid())
   content  String
+  userId   String?
   username String?
   postId   String
   type     CommentType
   post     Post    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user     User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 
+  @@index([userId])
+  @@index([postId])
   @@map("comments")
 }
 
