@@ -12,12 +12,16 @@ export const verifyToken: RequestHandler = async (req, res, next) => {
 
         try {
             const decoded = jwt.verify(bearerToken, process.env.JWT_SECRET as string) as JwtPayload
-            req.user = { id: decoded.id };
+            req.user = { id: decoded.id }; // populate req.user.id
             next()
         } catch(err) {
             return res.sendStatus(401)
         }
     } else {
-        return res.sendStatus(403);
+        return res
+            .status(403)
+            .json({
+                message: 'Authentication is required. Please log in first.'
+            })
     }
 }
