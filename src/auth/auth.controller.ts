@@ -1,11 +1,11 @@
 import type {RequestHandler} from "express";
-import {createUser} from "../users/local-users.repository";
+import {createUser} from "../users/users.repository";
 import {generateToken} from "../utils/generateToken";
 import prisma from "../database/prismaClient";
 import bcrypt from "bcrypt";
 
 
-export const signup: RequestHandler = async (req, res) => {
+export const signup: RequestHandler = async (req, res, next) => {
     try {
         const {username, email, password} = req.body;
 
@@ -38,7 +38,7 @@ export const signup: RequestHandler = async (req, res) => {
             message: "User created successfully."
         })
     } catch (err) {
-        res.send(err)
+        next(err)
     }
 }
 
