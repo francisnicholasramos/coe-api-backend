@@ -16,19 +16,25 @@ export const createPost = async (
     })
 }
 
+export const getAllUserPosts = async (
+    userId: string
+) => {
+    return prisma.post.findMany({
+        where: {userId},
+    })
+}
+
 export const updatePostById = async (
     id: string,
-    title: string,
-    content: string,
-    published: boolean
+    data: { 
+        title?: string; 
+        content?: string; 
+        published?: boolean 
+    }
 ) => {
     return prisma.post.update({
         where: {id},
-        data: {
-            title: title,
-            content: content,
-            published: published
-        }
+        data
     })
 }
 

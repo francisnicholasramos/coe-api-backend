@@ -1,19 +1,39 @@
 import type {RequestHandler} from "express";
+import {CreatePostSchema, UpdatePostSchema} from "./post.schema";
+
 import {createPost, 
+        getAllUserPosts,
         getPostById, 
         updatePostById,
         deletePostById
 } from "./post.repository";
 
 export class PostController {
-    // upload post
-    uploadPost: RequestHandler = async (req, res, next) => {
+    getAllPostsHandler: RequestHandler = async (req, res, next) => {
         try {
             const userId = req.user?.id;
 
             if (!userId) return res.sendStatus(401);
 
-            const {title, content, published} = req.body;
+            const blogs = await getAllUserPosts(userId);
+
+            res.json({
+                blogs
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    // upload post
+    uploadPostHandler: RequestHandler = async (req, res, next) => {
+        try {
+            const userId = req.user?.id;
+
+            if (!userId) return res.sendStatus(401);
+
+            const validated = CreatePostSchema.parse(req.body);
+            const {title, content, published} = validated;
 
             const data = await createPost(title, content, published, userId);
 
@@ -25,7 +45,7 @@ export class PostController {
         }
     }
 
-    updatePost: RequestHandler = async (req, res, next) => {
+    updatePostHandler: RequestHandler = async (req, res, next) => {
         try {
             const userId = req.user?.id;
 
@@ -45,9 +65,9 @@ export class PostController {
                 return res.status(401).json({message: "Unauthorized"});
             }
 
-            const {title, content, published} = req.body;
+            const validated = UpdatePostSchema.parse(req.body);
 
-            await updatePostById(postId, title, content, published)
+            await updatePostById(postId, validated)
             
             res.json({
                 message: 'Post successfully updated.'
@@ -58,7 +78,7 @@ export class PostController {
     }
 
     // delete post
-    deletePost: RequestHandler = async (req, res, next) => {
+    deletePostHandler: RequestHandler = async (req, res, next) => {
         try {
             const userId = req.user?.id;
 
@@ -83,7 +103,6 @@ export class PostController {
 
             await deletePostById(postId)
 
-            // 204 = No Content 
             res.json({
                 status: "success",
                 message: "Delete Blog Successfully."
