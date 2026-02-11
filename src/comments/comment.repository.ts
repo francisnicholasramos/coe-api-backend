@@ -3,6 +3,7 @@ import prisma from "../database/prismaClient";
 export const createComment = async (
     postId: string,
     user: string | null,
+    userId: string | null,
     comment: string,
     type: 'PUBLIC' | 'PRIVATE'
 ) => {
@@ -10,13 +11,14 @@ export const createComment = async (
         data: {
             postId,
             username: user || 'Anonymous',
+            userId: userId || null,
             content: comment,
             type
         }
     })
 }
 
-export const getCommentByPostId = async (
+export const getCommentById = async (
     id: string,
 ) => {
     return prisma.comment.findUnique({
@@ -33,5 +35,11 @@ export const updateComment = async (
         data: {
             content: comment
         }
+    })
+}
+
+export const deleteCommentById = async (id: string) => {
+    return prisma.comment.delete({
+        where: {id}
     })
 }

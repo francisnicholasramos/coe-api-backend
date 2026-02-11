@@ -1,5 +1,11 @@
 import {RequestHandler} from "express";
-import {createComment, updateComment, getCommentByPostId} from "./comment.repository";
+import {
+    createComment, 
+    updateComment, 
+    getCommentById,
+    deleteCommentById
+} from "./comment.repository";
+import {getUserById} from "../users/users.repository";
 
 export class CommentController {
     uploadCommentHandler: RequestHandler = async(req, res, next) => {
@@ -8,10 +14,15 @@ export class CommentController {
 
             let commentType: 'PUBLIC' | 'PRIVATE';
 
+            let username: string | null=null;
+
             if (!userId) {
                 commentType = 'PUBLIC'
+                username = null
             } else {
+                const user = await getUserById(userId)
                 commentType = 'PRIVATE'
+                username = user?.username || null;
             }
 
             const postId = req.query.id as string;
@@ -20,7 +31,13 @@ export class CommentController {
 
             const {comment} = req.body;
 
-            const newComment = await createComment(postId, null, comment, commentType)
+            const newComment = await createComment(
+                postId, 
+                username, 
+                userId,
+                comment, 
+                commentType
+            )
 
             res.status(201).json({
                 data: newComment
@@ -33,15 +50,95 @@ export class CommentController {
 
     updateCommentHandler: RequestHandler = async(req, res, next) => {
         try {
-            const postId = req.params.postId as string;
-            const commentId = req.params.commentId as string;
-            const {content, username} = req.body;
+            // check if there's a user for authentication
+            const userId = req.user?.id as string;
+            if (!userId) {
+                return res
+                    .status(401)
+                    .json({message: "Unauthorized. You are not logged-in!"});
+            }
 
-            // const comment = await getCommentByPostId();
-            
-            await updateComment(postId, content)
+            // check if user is existing
+            const user = await getUserById(userId);
+            if (!user) {
+                return res
+                    .status(401)
+                    .json({message: "Unauthorized"});
+            }
+
+            const commentId = req.params.commentId as string;
+
+            const comment = await getCommentById(commentId);
+
+            if (!comment) {
+                return res
+                    .status(404)
+                    .json({message: "Comment not found."});
+            }
+
+            // check ownership
+            if (comment.userId !== user.id) {
+                return res
+                    .status(403)
+                    .json({
+                        message: "Permission denied", 
+                        detail: "You can only edit or delete comments you created"
+                    })
+            }
+
+            const {content} = req.body;
+
+            await updateComment(commentId, content);
+
+            res.json({
+                message: "Comment successfully updated."
+            });
         } catch (err) {
             res.status(500)
+            next(err)
+        }
+    }
+
+    deleteCommentHandler: RequestHandler = async(req, res, next) => {
+        try {
+            const userId = req.user?.id as string;
+
+            if (!userId) {
+                return res
+                    .status(401)
+                    .json({
+                        message: "Unauthorized"
+                    })
+            }
+
+            const commentId = req.params.commentId as string;
+
+            const comment = await getCommentById(commentId);
+
+            if (!comment) {
+                return res
+                    .status(404)
+                    .json({
+                        message: "Comment not found."
+                    })
+            }
+
+            if (comment.userId !== userId || !comment.userId) {
+                return res
+                    .status(404)
+                    .json({
+                        message: "Permission denied", 
+                        detail: "You can only edit or delete comments you created"
+                    })
+            }
+
+            await deleteCommentById(commentId);
+            
+            res.json({
+                status: "success",
+                message: "Delete comment successfully."
+            });
+        } catch (err) {
             next(err)
         }
     }
