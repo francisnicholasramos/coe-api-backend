@@ -5,6 +5,7 @@ import {
     getCommentById,
     deleteCommentById
 } from "./comment.repository";
+import {getPostById} from "../posts/post.repository";
 import {getUserById} from "../users/users.repository";
 
 export class CommentController {
@@ -28,6 +29,13 @@ export class CommentController {
             const postId = req.query.id as string;
 
             if (!postId) return res.sendStatus(404);
+
+            const post = await getPostById(postId);
+
+            // handle comments to private blogs
+            if (!post!.published) {
+                return res.sendStatus(403)
+            }
 
             const {comment} = req.body;
 
