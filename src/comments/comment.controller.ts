@@ -7,6 +7,7 @@ import {
 } from "./comment.repository";
 import {getPostById} from "../posts/post.repository";
 import {getUserById} from "../users/users.repository";
+import {CreateCommentSchema, UpdateCommentSchema} from "./comment.schema";
 
 export class CommentController {
     uploadCommentHandler: RequestHandler = async(req, res, next) => {
@@ -37,7 +38,8 @@ export class CommentController {
                 return res.sendStatus(403)
             }
 
-            const {comment} = req.body;
+            const validated = CreateCommentSchema.parse(req.body);
+            const {content: comment} = validated;
 
             const newComment = await createComment(
                 postId, 
@@ -94,7 +96,8 @@ export class CommentController {
                     })
             }
 
-            const {content} = req.body;
+            const validated = UpdateCommentSchema.parse(req.body)
+            const {content} = validated;
 
             await updateComment(commentId, content);
 
