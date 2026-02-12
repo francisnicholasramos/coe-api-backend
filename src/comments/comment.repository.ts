@@ -2,7 +2,6 @@ import prisma from "../database/prismaClient";
 
 export const createComment = async (
     postId: string,
-    user: string | null,
     userId: string | null,
     comment: string,
     type: 'PUBLIC' | 'PRIVATE'
@@ -10,10 +9,16 @@ export const createComment = async (
     return prisma.comment.create({
         data: {
             postId,
-            username: user || 'Anonymous',
             userId: userId || null,
             content: comment,
             type
+        },
+        include: {
+            user: {
+                select: {
+                    username: true
+                }
+            }
         }
     })
 }

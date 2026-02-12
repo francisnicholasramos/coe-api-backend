@@ -36,7 +36,6 @@ model Comment {
   id       String  @id @default(uuid())
   content  String
   userId   String?
-  username String?
   createdAt DateTime  @default(now())
   postId   String
   type     CommentType

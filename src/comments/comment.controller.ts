@@ -16,15 +16,10 @@ export class CommentController {
 
             let commentType: 'PUBLIC' | 'PRIVATE';
 
-            let username: string | null=null;
-
             if (!userId) {
                 commentType = 'PUBLIC'
-                username = null
             } else {
-                const user = await getUserById(userId)
                 commentType = 'PRIVATE'
-                username = user?.username || null;
             }
 
             const postId = req.query.id as string;
@@ -43,7 +38,6 @@ export class CommentController {
 
             const newComment = await createComment(
                 postId, 
-                username, 
                 userId,
                 comment, 
                 commentType
