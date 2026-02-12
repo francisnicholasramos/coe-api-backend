@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import {Request, Response, NextFunction} from "express";
 
 import auth from "./auth/auth.router";
@@ -12,6 +13,14 @@ const port = process.env.PORT || 3000;
 // parsers
 app.use(express.urlencoded({ extended: true, limit: '5mb'}));
 app.use(express.json({limit: '5mb'}));
+
+// cors 
+app.use(cors({
+    origin: "*",
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}))
 
 // base routes
 app.use(auth)
