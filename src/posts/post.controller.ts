@@ -22,6 +22,22 @@ export class PostController {
         }
     }
 
+    getPostByIdHandler: RequestHandler = async (req, res, next) => {
+        try {
+            const postId = req.params.postId as string
+
+            if (!postId) return res.status(404).json({message: "Blog not found."})
+
+            const post = await getPostById(postId);
+
+            res.json({
+                post
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
+
     // user's all blogs
     getUserPostsHandler: RequestHandler = async (req, res, next) => {
         try {

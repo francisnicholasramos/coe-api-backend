@@ -6,11 +6,19 @@ const router = Router();
 
 const post = new PostController;
 
+// public blogs
 router.get(
     "/", 
     post.getPublicPostHandler
 )
 
+// get specific blog
+router.get(
+    "/:postId",
+    post.getPostByIdHandler
+)
+
+// private blogs (scope to user)
 router.get(
     "/",
     verifyToken,
