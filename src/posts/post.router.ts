@@ -7,9 +7,14 @@ const router = Router();
 const post = new PostController;
 
 router.get(
+    "/", 
+    post.getPublicPostHandler
+)
+
+router.get(
     "/",
     verifyToken,
-    post.getAllPostsHandler
+    post.getUserPostsHandler
 )
 
 router.post(

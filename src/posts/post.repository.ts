@@ -16,6 +16,12 @@ export const createPost = async (
     })
 }
 
+export const getPublicPosts = async () => {
+    return prisma.post.findMany({
+        where: { published: true }
+    })
+}
+
 export const getAllUserPosts = async (
     userId: string
 ) => {

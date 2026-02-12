@@ -2,6 +2,7 @@ import type {RequestHandler} from "express";
 import {CreatePostSchema, UpdatePostSchema} from "./post.schema";
 
 import {createPost, 
+        getPublicPosts,
         getAllUserPosts,
         getPostById, 
         updatePostById,
@@ -9,7 +10,20 @@ import {createPost,
 } from "./post.repository";
 
 export class PostController {
-    getAllPostsHandler: RequestHandler = async (req, res, next) => {
+    getPublicPostHandler: RequestHandler = async (req, res, next) => {
+        try {
+            const publicBlogs = await getPublicPosts();
+
+            res.json({ 
+                publicBlogs 
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    // user's all blogs
+    getUserPostsHandler: RequestHandler = async (req, res, next) => {
         try {
             const userId = req.user?.id;
 
