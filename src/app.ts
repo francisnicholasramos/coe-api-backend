@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
 import {Request, Response, NextFunction} from "express";
 
 import auth from "./auth/auth.router";
@@ -10,13 +11,21 @@ const app = express();
 
 const port = process.env.PORT || 3000;
 
+// security headers
+app.use(helmet({
+    contentSecurityPolicy: false
+}));
+
 // parsers
 app.use(express.urlencoded({ extended: true, limit: '5mb'}));
 app.use(express.json({limit: '5mb'}));
 
 // cors 
 app.use(cors({
-    origin: "*",
+    origin: [
+        "http://localhost:5173",
+        "http://localhost:3000",
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization']
