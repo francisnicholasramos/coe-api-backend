@@ -24,6 +24,15 @@ export const getPublicPosts = async () => {
                 select: {
                     username: true
                 }
+            },
+            comments: {
+                select: {
+                    id: true,
+                    content: true,
+                    createdAt: true,
+                    type: true,
+                    userId: true
+                }
             }
         }
     })
@@ -59,6 +68,13 @@ export const deletePostById = async (id: string) => {
 
 export const getPostById = async (id: string) => {
     return prisma.post.findUnique({
-        where: {id}
+        where: {id},
+        include: {
+            user: {
+                select: {
+                    username: true
+                }
+            }
+        }
     })
 }

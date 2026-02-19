@@ -25,10 +25,19 @@ export class PostController {
     getPostByIdHandler: RequestHandler = async (req, res, next) => {
         try {
             const postId = req.params.postId as string
+            const username = req.params.username as string
 
             if (!postId) return res.status(404).json({message: "Blog not found."})
 
             const post = await getPostById(postId);
+
+            if (!post) {
+                return res.status(404).json({message: "Post not found."})
+            }
+
+            if (post.user.username !== username) {
+                return res.status(404).json({message: "Post not found for this user."})
+            }
 
             res.json({
                 post

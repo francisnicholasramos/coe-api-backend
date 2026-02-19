@@ -14,7 +14,7 @@ router.get(
 
 // get specific blog
 router.get(
-    "/:postId",
+    "/@:username/:postId",
     post.getPostByIdHandler
 )
 
