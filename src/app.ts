@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import cookieParser from "cookie-parser";
 import {Request, Response, NextFunction} from "express";
 
 import auth from "./auth/auth.router";
@@ -19,12 +20,14 @@ app.use(helmet({
 // parsers
 app.use(express.urlencoded({ extended: true, limit: '5mb'}));
 app.use(express.json({limit: '5mb'}));
+app.use(cookieParser());
 
 // cors 
 app.use(cors({
     origin: [
         "http://localhost:5173",
         "http://localhost:3000",
+        "http://localhost:3001",
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],

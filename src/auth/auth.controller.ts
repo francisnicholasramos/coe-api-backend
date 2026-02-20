@@ -61,11 +61,10 @@ export const login: RequestHandler = async (req, res) => {
             return res.status(401).json({message: "Invalid email or password."})
         }
         
-        const token = generateToken(user.id, res)
+        generateToken(user.id, res)
 
         res.status(201).json({
             status: "success",
-            token
         })
     } catch (err) {
         res.status(500).json({
@@ -103,10 +102,20 @@ export const refresh: RequestHandler = async (req, res) => {
 }
 
 export const logout: RequestHandler = async (req, res) => {
-    res.cookie("jwt", "", {
+    res.clearCookie("accessToken", {
         httpOnly: true,
-        expires: new Date(0)
-    }),
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "none",
+        path: "/",
+    });
+
+    res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "none",
+        path: "/refresh",
+    });
+
     res.status(200).json({
         status: "success",
         message: "Logged out successfully."

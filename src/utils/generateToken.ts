@@ -12,6 +12,14 @@ export const generateToken = (userId: string, res: Response) => {
         expiresIn: "7d"
     })
 
+    res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // production: true, development: false
+        sameSite: "none",
+        path: "/",
+        maxAge: 1000 * 60 * 10
+    });
+
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -19,6 +27,4 @@ export const generateToken = (userId: string, res: Response) => {
         path: "/refresh",
         maxAge: 1000 * 60 * 60 * 24 * 7,
     });
-
-    return accessToken;
 }
