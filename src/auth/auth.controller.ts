@@ -3,6 +3,7 @@ import {createUser} from "../users/users.repository";
 import {generateToken} from "../utils/generateToken";
 import prisma from "../database/prismaClient";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 
 export const signup: RequestHandler = async (req, res, next) => {
@@ -70,6 +71,34 @@ export const login: RequestHandler = async (req, res) => {
         res.status(500).json({
             message: "Internal Server Error."
         })
+    }
+}
+
+export const refresh: RequestHandler = async (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+        return res.status(401).json({
+            message: "Refresh token not found."
+        })
+    }
+
+    try {
+        const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET as string) as { id: string };
+
+        const newAccessToken = jwt.sign(
+            { id: decoded.id }, 
+            process.env.JWT_SECRET as string, 
+            { expiresIn: "10m" }
+        );
+
+        res.status(200).json({ 
+            accessToken: newAccessToken 
+        });
+    } catch (err) {
+        return res.status(403).json({ 
+            message: "Invalid refresh token" 
+        });
     }
 }
 

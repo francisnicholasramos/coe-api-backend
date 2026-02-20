@@ -3,15 +3,22 @@ import {Response} from "express";
 
 export const generateToken = (userId: string, res: Response) => {
     const payload = {id: userId};
-    const token = jwt.sign(payload, process.env.JWT_SECRET as string, {
-        expiresIn: "7d",
+
+    const accessToken = jwt.sign(payload, process.env.JWT_SECRET as string, {
+        expiresIn: "10m",
     });
 
-    res.cookie("jwt", token, {
-        httpOnly: true, 
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: "strict",
-        maxAge: 1000 * 60 * 60 * 24 * 7 // milsecs * secs * mins * hours * days
+    const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET as string, {
+        expiresIn: "7d"
+    })
+
+    res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "none",
+        path: "/refresh",
+        maxAge: 1000 * 60 * 60 * 24 * 7,
     });
-    return token;
+
+    return accessToken;
 }
