@@ -43,6 +43,13 @@ export const getAllUserPosts = async (
 ) => {
     return prisma.post.findMany({
         where: {userId},
+        include: {
+            user: {
+                select: {
+                    username: true
+                }
+            }
+        }
     })
 }
 
@@ -72,7 +79,15 @@ export const getPostById = async (id: string) => {
         include: {
             user: {
                 select: {
+                    id: true,
                     username: true
+                }
+            },
+            comments: {
+                select: {
+                    id: true,
+                    content: true,
+                    createdAt: true
                 }
             }
         }
