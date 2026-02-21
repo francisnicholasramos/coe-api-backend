@@ -15,14 +15,21 @@ router.get(
 // get specific blog
 router.get(
     "/@:username/:postId",
-    post.getPostByIdHandler
+    post.getPublicPostById
 )
 
 // private blogs (scope to user)
 router.get(
-    "/",
+    "/me",
     verifyToken,
     post.getUserPostsHandler
+)
+
+// get specific private blog 
+router.get(
+    "/posts/:postId",
+    verifyToken,
+    post.getPostByIdHandler
 )
 
 router.post(

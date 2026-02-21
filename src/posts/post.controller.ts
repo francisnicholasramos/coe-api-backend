@@ -22,10 +22,51 @@ export class PostController {
         }
     }
 
-    getPostByIdHandler: RequestHandler = async (req, res, next) => {
+    getUserPostByIdHandler: RequestHandler = async (req, res, next) => {
+        try {
+            const postId = req.params.postId as string;
+            
+            if (!postId) return res.status(404).json({message: "Blog not found."})
+
+            const post = await getPostById(postId)
+
+            if (!post) {
+                return res.status(404).json({message: "Post not found."})
+            }
+
+            res.json({
+                post
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    getPublicPostById: RequestHandler = async (req, res, next) => {
         try {
             const postId = req.params.postId as string
             const username = req.params.username as string
+
+            if (!postId) return res.status(404).json({message: "Blog not found."})
+
+            const post = await getPostById(postId);
+
+            if (post?.user.username !== username) {
+                return res.status(404).json({message: "Post not found for this user."})
+            }
+
+            res.json({
+                post
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    getPostByIdHandler: RequestHandler = async (req, res, next) => {
+        try {
+            const postId = req.params.postId as string
+            const userId = req.user.id as string
 
             if (!postId) return res.status(404).json({message: "Blog not found."})
 
@@ -35,7 +76,7 @@ export class PostController {
                 return res.status(404).json({message: "Post not found."})
             }
 
-            if (post.user.username !== username) {
+            if (post.user.id !== userId) {
                 return res.status(404).json({message: "Post not found for this user."})
             }
 
