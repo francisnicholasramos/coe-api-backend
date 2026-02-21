@@ -104,14 +104,14 @@ export const refresh: RequestHandler = async (req, res) => {
 export const logout: RequestHandler = async (req, res) => {
     res.clearCookie("accessToken", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: true,
         sameSite: "none",
         path: "/",
     });
 
     res.clearCookie("refreshToken", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: true,
         sameSite: "none",
         path: "/refresh",
     });
