@@ -9,7 +9,7 @@ const comment = new CommentController;
 
 router.post(
     "/comments", 
-    softAuth,
+    verifyToken,
     comment.uploadCommentHandler
 )
 
