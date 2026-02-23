@@ -87,7 +87,12 @@ export const getPostById = async (id: string) => {
                 select: {
                     id: true,
                     content: true,
-                    createdAt: true
+                    createdAt: true,
+                    user: {
+                        select: {
+                            username: true
+                        }
+                    }
                 }
             }
         }

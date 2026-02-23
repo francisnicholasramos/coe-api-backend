@@ -1,6 +1,6 @@
 namespace Express {
     interface Request {
-        user: { id: string }
+        user: { id: string, username: string }
         token: string
     }
 }
@@ -8,4 +8,5 @@ namespace Express {
 interface JwtPayload {
     sub: string 
     id: string
+    username: string
 }
