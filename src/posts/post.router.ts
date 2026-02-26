@@ -1,6 +1,7 @@
 import {Router} from "express";
 import {PostController} from "./post.controller";
 import {verifyToken} from "../middleware/verifyToken";
+import {writeLimiter} from "../middleware/rateLimiter";
 
 const router = Router();
 
@@ -34,6 +35,7 @@ router.get(
 
 router.post(
     "/posts", 
+    writeLimiter,
     verifyToken,
     post.uploadPostHandler
 )

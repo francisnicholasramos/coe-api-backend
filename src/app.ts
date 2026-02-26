@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
+import {globalLimiter} from "./middleware/rateLimiter";
 import {Request, Response, NextFunction} from "express";
 
 import auth from "./auth/auth.router";
@@ -32,6 +33,9 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }))
+
+// rate limiting
+app.use(globalLimiter)
 
 // base routes
 app.use(auth)
