@@ -8,6 +8,7 @@ import {Request, Response, NextFunction} from "express";
 import auth from "./auth/auth.router";
 import postRoutes from "./posts/post.router";
 import commentRoutes from "./comments/comment.router"
+import uploadRoutes from "./uploads/upload.router"
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use(globalLimiter)
 app.use(auth)
 app.use("/", postRoutes)
 app.use("/", commentRoutes)
+app.use("/", uploadRoutes)
 
 // error handling
 app.use((
