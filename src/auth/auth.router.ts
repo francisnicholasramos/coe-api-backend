@@ -5,10 +5,10 @@ import {authLogInLimiter, authSignInLimiter} from "../middleware/rateLimiter";
 const router = Router();
 
 router.route("/signup")
-      .post(authSignInLimiter, signup)
+      .post(signup)
 
 router.route("/login")
-      .post(authLogInLimiter, login)
+      .post(login)
 
 router.route("/refresh-token")
       .post(refresh)

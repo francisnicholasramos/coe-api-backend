@@ -1,32 +1,33 @@
 import type {RequestHandler} from "express";
 import {createUser} from "../users/users.repository";
+import {SignUpSchema} from "./auth.schema";
 import {generateToken} from "../utils/generateToken";
 import prisma from "../database/prismaClient";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import * as z from "zod";
 
 
 export const signup: RequestHandler = async (req, res, next) => {
     try {
-        const {username, email, password} = req.body;
-
-        const userExists = await prisma.user.findUnique({
-            where: {username: username}
-        })
+        const validated = SignUpSchema.parse(req.body);
+        const {username, email, password} = validated;
+        
+        // Check both in parallel for efficiency
+        const [userExists, emailExists] = await Promise.all([
+            prisma.user.findUnique({ where: { username } }),
+            prisma.user.findUnique({ where: { email } }),
+        ]);
 
         if (userExists) {
             return res
-                .status(400)
+                .status(409)
                 .json({message: "Username already exists."})
         }
 
-        const emailExists = await prisma.user.findUnique({
-            where: {email: email}
-        })
-
         if (emailExists) {
             return res
-                .status(400)
+                .status(409)
                 .json({message: "User already exists with this email."})
         }
 
@@ -39,7 +40,12 @@ export const signup: RequestHandler = async (req, res, next) => {
             message: "User created successfully."
         })
     } catch (err) {
-        next(err)
+        if (err instanceof z.ZodError) {
+            return res
+                .status(400)
+                .json({ message: err.issues[0].message });
+        }
+        next(err);
     }
 }
 
@@ -91,6 +97,14 @@ export const refresh: RequestHandler = async (req, res) => {
             { expiresIn: "10m" }
         );
 
+        res.cookie("accessToken", newAccessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            path: "/",
+            maxAge: 1000 * 60 * 10,
+        });
+
         res.status(200).json({ 
             accessToken: newAccessToken 
         });
@@ -104,16 +118,16 @@ export const refresh: RequestHandler = async (req, res) => {
 export const logout: RequestHandler = async (req, res) => {
     res.clearCookie("accessToken", {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         path: "/",
     });
 
     res.clearCookie("refreshToken", {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        path: "/refresh",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        path: "/refresh-token",
     });
 
     res.status(200).json({
