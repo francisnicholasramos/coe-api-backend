@@ -1,14 +1,14 @@
 import Router from "express";
 import {signup, login, refresh, logout} from "./auth.controller";
-import {authLimiter} from "../middleware/rateLimiter";
+import {authLogInLimiter, authSignInLimiter} from "../middleware/rateLimiter";
 
 const router = Router();
 
 router.route("/signup")
-      .post(authLimiter, signup)
+      .post(authSignInLimiter, signup)
 
 router.route("/login")
-      .post(authLimiter, login)
+      .post(authLogInLimiter, login)
 
 router.route("/refresh-token")
       .post(refresh)
