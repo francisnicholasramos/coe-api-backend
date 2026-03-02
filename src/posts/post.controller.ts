@@ -1,5 +1,6 @@
 import type {RequestHandler} from "express";
 import {CreatePostSchema, UpdatePostSchema} from "./post.schema";
+import {handleDeleteUponEdit, handleDeleteImage} from "../uploads/upload.controller";
 
 import {createPost, 
         getPublicPosts,
@@ -147,6 +148,9 @@ export class PostController {
 
             const validated = UpdatePostSchema.parse(req.body);
 
+            // delete removed images
+            await handleDeleteUponEdit(post.content, validated.content);
+
             await updatePostById(postId, validated)
             
             res.json({
@@ -180,6 +184,9 @@ export class PostController {
             if (post.userId !== userId) {
                 return res.status(401).json({message: "Unauthorized"});
             }
+
+            // delete all images in the current post
+            await handleDeleteImage(post.content);
 
             await deletePostById(postId)
 

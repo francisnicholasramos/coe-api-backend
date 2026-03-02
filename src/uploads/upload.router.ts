@@ -1,16 +1,15 @@
 import { Router } from "express";
-import { upload } from "../middleware/upload";
+import { handleImageUpload } from "./upload.controller";
+import multer from "multer";
 
 const router = Router();
 
+const upload = multer({storage: multer.memoryStorage()});
+
 router.post(
-    "/uploadImage",
-    upload.single("file"),  // matches TinyMCE's default "file" field
-    (req, res) => {
-        if (!req.file) {
-            return res.status(400).json({ error: "No file uploaded" });
-        }
-        res.json({ url: req.file.path });  // Cloudinary URL
-    }
+    "/uploadImage", 
+    upload.single('file'),
+    handleImageUpload
 );
+
 export default router;
