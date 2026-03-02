@@ -1,7 +1,6 @@
 import type {RequestHandler} from "express";
 import cloudinary from "../config/cloudinaryConfig";
 
-// TODO: delete image if user decides to remove it during create post
 export const handleImageUpload: RequestHandler  = (req, res) => { 
     const stream = cloudinary.uploader.upload_stream(
         { 
@@ -15,6 +14,18 @@ export const handleImageUpload: RequestHandler  = (req, res) => {
     ).end(req.file?.buffer)
 
     return stream;
+}
+
+export const handleDeleteUponPost: RequestHandler = async (req, res) => {
+    const {url} = req.body;
+
+    const urlParts = url.split('/');
+    const uploadIndex = urlParts.indexOf('upload');
+    const filename = urlParts.slice(uploadIndex + 2).join('/');
+
+    const publicId = filename.replace(/\.[^.]+$/, '');
+    
+    await cloudinary.uploader.destroy(publicId);
 }
 
 // if user remove image from content
