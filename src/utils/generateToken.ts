@@ -5,7 +5,7 @@ export const generateToken = (userId: string, res: Response) => {
     const payload = {id: userId};
 
     const accessToken = jwt.sign(payload, process.env.JWT_SECRET as string, {
-        expiresIn: "10m",
+        expiresIn: "15m",
     });
 
     const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET as string, {
@@ -14,17 +14,17 @@ export const generateToken = (userId: string, res: Response) => {
 
     res.cookie("accessToken", accessToken, {
         httpOnly: true,
-        secure: true, // production: true, development: false
-        sameSite: "none",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         path: "/",
         maxAge: 1000 * 60 * 10
     });
 
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        path: "/refresh",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        path: "/refresh-token",
         maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 }
