@@ -1,3 +1,4 @@
+import type {Prisma} from "../generated/prisma/client";
 import prisma from "../database/prismaClient";
 
 export const createPost = async (
@@ -34,12 +35,16 @@ export const getPublicPosts = async () => {
                     userId: true
                 }
             }
+        },
+        orderBy: {
+            createdAt: 'desc'
         }
     })
 }
 
 export const getAllUserPosts = async (
-    userId: string
+    userId: string,
+    sortBy: Prisma.PostOrderByWithRelationInput
 ) => {
     return prisma.post.findMany({
         where: {userId},
@@ -49,7 +54,8 @@ export const getAllUserPosts = async (
                     username: true
                 }
             }
-        }
+        },
+        orderBy: sortBy
     })
 }
 

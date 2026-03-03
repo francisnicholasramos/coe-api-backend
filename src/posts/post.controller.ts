@@ -93,10 +93,21 @@ export class PostController {
     getUserPostsHandler: RequestHandler = async (req, res, next) => {
         try {
             const userId = req.user?.id;
-
             if (!userId) return res.sendStatus(401);
 
-            const blogs = await getAllUserPosts(userId);
+            const { sortBy = "createdAt", order = "desc" } = req.query as {
+                sortBy?: "createdAt";
+                order?: "asc" | "desc";
+            };
+
+            const validSortFields = ["createdAt", "title"];
+            const validOrders = ["asc", "desc"];
+
+            if (!validSortFields.includes(sortBy) || !validOrders.includes(order)) {
+                return res.status(400).json({ message: "Invalid sort parameters." });
+            }
+
+            const blogs = await getAllUserPosts(userId, { [sortBy]: order });
 
             res.json({
                 blogs
