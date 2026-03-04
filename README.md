@@ -8,14 +8,21 @@
 Built with TypeScript + Express backend for a blogging platform with authentication, post management, comments, image uploads, and production-minded security defaults.
 </p>
 
+<p align="center">
+    <span>Main Web Client: </span> 
+    <span>
+        <b><a href="https://coe-blog-sepia.vercel.app">https://coe-blog-sepia.vercel.app</a></b>
+    </span> 
+</p>
+
 ## Endpoints
 
 | Endpoint                    | Method    | Description                                    |
 | --------------------------- | --------- | ---------------------------------------------- |
 | /                           | GET       | Retrieve all blog posts                        |
 | /me                         | GET       | Retrieve all blog posts (requires login)       |                      
-| /search                     | GET       | Search specific blog post (requires login)     |                      
-| /me/search                  | GET       | Search specific blog post                      |                      
+| /search                     | GET       | Search specific blog post                      |                      
+| /me/search                  | GET       | Search specific blog post (requires login)     |                      
 | /posts                      | POST      | Create new blog post (requires login)          |                
 | /@:username/:postId         | GET       | Retrieve specific blog post                    | 
 | /posts/:postId              | GET       | Retrieve blog post (requires login)            |              
@@ -30,16 +37,18 @@ Built with TypeScript + Express backend for a blogging platform with authenticat
 | /signup                     | POST      | Create account                                 |
 
 ### Key Features
-* **Blog Post Management**: Full CRUD operations - create, read, update, and delete posts
-* **Commenting System**: Add comments to posts with PUBLIC and PRIVATE comment types
-* **Publishing System**: Draft and published post states
-* **Image Upload**: Support upload and manage images via Cloudinary as bucket storage
-* **Search & Sorting**: Search and sort blog posts by title and content
+* **Blog Post Management**: Full CRUD operations - create, read, update, and delete posts.
+* **Commenting System**: Add comments to posts with PUBLIC and PRIVATE comment types.
+* **Publishing System**: Draft and published post states.
+* **Image Upload**: Support upload and manage images via Cloudinary as bucket storage.
+* **Search & Sorting**: Search and sort blog posts by title and content.
 
 ### Additional Features
-* **Authentication**: Access + Refresh token cookie strategy using JWT
+* **Rate Limiting strategy**: Limits requests per IP and per action type to reduce spam/abuse and protect server performance. 
+* **Database performance**: Indexed key columns to improve query performance and speed up data retrieval operations.
+* **Authentication**: Access + Refresh token cookie strategy using JWT.
 * **Security**: Protected against common vulnerabilities with Helmet.
 * **Modular Architecture**: Application structured by feature and split into layers for modularity and maintainability.
 * **Type Safety**: All backend code written in Typescript.
-* **Schema Validation**: Validates schema using Zod library 
+* **Schema Validation**: Validates schema using Zod library.
 * **Cloud Storage Integration**: Securely manage image uploads with Cloudinary Storage.
