@@ -1,11 +1,12 @@
 import express from "express";
 import cors from "cors";
-import helmet from "helmet";
+import helmet from "helmet"; 
 import cookieParser from "cookie-parser";
 import {globalLimiter} from "./middleware/rateLimiter";
 import {Request, Response, NextFunction} from "express";
 
 import auth from "./auth/auth.router";
+import userRoutes from "./users/user.router";
 import postRoutes from "./posts/post.router";
 import commentRoutes from "./comments/comment.router"
 import uploadRoutes from "./uploads/upload.router"
@@ -31,7 +32,7 @@ app.use(cors({
         "http://localhost:5173",
     ],
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }))
 
@@ -40,6 +41,7 @@ app.use(globalLimiter)
 
 // base routes
 app.use(auth)
+app.use("/", userRoutes)
 app.use("/", postRoutes)
 app.use("/", commentRoutes)
 app.use("/", uploadRoutes)
