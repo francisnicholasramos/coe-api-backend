@@ -104,3 +104,41 @@ export const getPostById = async (id: string) => {
         }
     })
 }
+
+export const searchPublicPosts = async (query: string) => {
+    return prisma.post.findMany({
+        where: {
+            published: true,
+            OR: [ 
+                {title: {contains: query, mode: 'insensitive' }},
+                {content: {contains: query, mode: 'insensitive' }},
+            ]
+        },
+        include: {
+            user: {
+                select: {
+                    username: true
+                }
+            }
+        },
+    })
+}
+
+export const searchUserPosts = async (userId: string, query: string) => {
+    return prisma.post.findMany({
+        where: {
+            userId,
+            OR: [ 
+                {title: {contains: query, mode: 'insensitive' }},
+                {content: {contains: query, mode: 'insensitive' }},
+            ]
+        },
+        include: {
+            user: {
+                select: {
+                    username: true
+                }
+            }
+        }
+    })
+}

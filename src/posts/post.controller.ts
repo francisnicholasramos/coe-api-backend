@@ -7,7 +7,9 @@ import {createPost,
         getAllUserPosts,
         getPostById, 
         updatePostById,
-        deletePostById
+        deletePostById,
+        searchPublicPosts,
+        searchUserPosts
 } from "./post.repository";
 
 export class PostController {
@@ -209,4 +211,45 @@ export class PostController {
             next(err)
         }
     }
+
+    searchPublicPostsHandler: RequestHandler = async (req, res, next) => {
+        try {
+            const { q } = req.query as {q?: string};
+
+            if (!q || q.trim().length === 0) {
+                return res.status(400).json({
+                    message: "You must input something."
+                })
+            }
+
+            const results = await searchPublicPosts(q);
+
+            res.json({results});
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    searchUserPostsHandler: RequestHandler = async (req, res, next) => {
+        try {
+            const userId = req.user?.id;
+
+            if (!userId) return res.sendStatus(401);
+
+            const { q } = req.query as {q?: string};
+
+            if (!q || q.trim().length === 0) {
+                return res.status(400).json({
+                    message: "You must input something."
+                })
+            }
+
+            const results = await searchUserPosts(userId, q);
+
+            res.json({results});
+        } catch (err) {
+            next(err)
+        }
+    }
+
 }

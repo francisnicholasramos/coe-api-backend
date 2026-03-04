@@ -13,6 +13,11 @@ router.get(
     post.getPublicPostHandler
 )
 
+router.get(
+    "/search",
+    post.searchPublicPostsHandler
+)
+
 // get specific blog
 router.get(
     "/@:username/:postId",
@@ -24,6 +29,12 @@ router.get(
     "/me",
     verifyToken,
     post.getUserPostsHandler
+)
+
+router.get(
+    "/me/search",
+    verifyToken,
+    post.searchUserPostsHandler
 )
 
 // get specific private blog 
