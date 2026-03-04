@@ -99,8 +99,8 @@ export const refresh: RequestHandler = async (req, res) => {
 
         res.cookie("accessToken", newAccessToken, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            secure: true,
+            sameSite: "none",
             path: "/",
             maxAge: 1000 * 60 * 10,
         });
@@ -118,15 +118,15 @@ export const refresh: RequestHandler = async (req, res) => {
 export const logout: RequestHandler = async (req, res) => {
     res.clearCookie("accessToken", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        secure: true,
+        sameSite: "none",
         path: "/",
     });
 
     res.clearCookie("refreshToken", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        secure: true,
+        sameSite: "none",
         path: "/refresh-token",
     });
 
