@@ -8,6 +8,8 @@
 Built with TypeScript + Express backend for a blogging platform with authentication, post management, comments, image uploads, and production-minded security defaults.
 </p>
 
+<br/>
+
 <p align="center">
     <span>Main Web Client: </span> 
     <span>
