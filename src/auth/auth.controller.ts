@@ -1,5 +1,5 @@
 import type {RequestHandler} from "express";
-import {createUser} from "../users/users.repository";
+import {createUser} from "../users/user.repository";
 import {SignUpSchema} from "./auth.schema";
 import {generateToken} from "../utils/generateToken";
 import prisma from "../database/prismaClient";
