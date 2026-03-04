@@ -37,6 +37,7 @@ Built with TypeScript + Express backend for a blogging platform with authenticat
 | /uploadImage                | DELETE    | Delete image in cloudinary (requires login)    |
 | /login                      | POST      | Login                                          |
 | /signup                     | POST      | Create account                                 |
+| /change-password            | PUT       | Change password                                |
 
 ### Key Features
 * **Blog Post Management**: Full CRUD operations - create, read, update, and delete posts.
