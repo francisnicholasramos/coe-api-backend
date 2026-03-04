@@ -6,7 +6,7 @@ import {
     deleteCommentById
 } from "./comment.repository";
 import {getPostById} from "../posts/post.repository";
-import {getUserById} from "../users/users.repository";
+import {getUserById} from "../users/user.repository";
 import {CreateCommentSchema, UpdateCommentSchema} from "./comment.schema";
 
 export class CommentController {
@@ -14,6 +14,14 @@ export class CommentController {
         try {
             const userId = req.user?.id as string;
 
+            if (!userId) {
+                return res.status(401).json({
+                    message: "You must be logged in to comment."
+                })
+
+            }
+
+            // lemme think if i'm going to make this feature
             let commentType: 'PUBLIC' | 'PRIVATE';
 
             if (!userId) {
