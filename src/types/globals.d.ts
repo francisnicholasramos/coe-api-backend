@@ -1,6 +1,6 @@
 namespace Express {
     interface Request {
-        user: { id: string, username: string }
+        user: { id: string }
         token: string
         sortBy: Prisma.PostOrderByWithRelationInput
     }

@@ -89,20 +89,34 @@ export const refresh: RequestHandler = async (req, res) => {
     }
 
     try {
-        const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET as string) as { id: string };
+        const isBlocklisted = await prisma.blocklist.findUnique({
+            where: {
+                token: refreshToken
+            }
+        })
+
+        if (isBlocklisted) {
+            return res.status(401).json({
+                message: "Token has been revoked."
+            })
+        }
+
+        const decoded = jwt.verify(
+            refreshToken, 
+            process.env.JWT_REFRESH_SECRET as string) as { id: string };
 
         const newAccessToken = jwt.sign(
             { id: decoded.id }, 
             process.env.JWT_SECRET as string, 
-            { expiresIn: "10m" }
+            { expiresIn: "15m" }
         );
 
         res.cookie("accessToken", newAccessToken, {
             httpOnly: true,
             secure: true,
-            sameSite: "none",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             path: "/",
-            maxAge: 1000 * 60 * 10,
+            maxAge: 1000 * 60 * 15,
         });
 
         res.status(200).json({ 
@@ -116,22 +130,52 @@ export const refresh: RequestHandler = async (req, res) => {
 }
 
 export const logout: RequestHandler = async (req, res) => {
-    res.clearCookie("accessToken", {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        path: "/",
-    });
+    try {
+        const refreshToken = req.cookies?.refreshToken;
 
-    res.clearCookie("refreshToken", {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        path: "/refresh-token",
-    });
+        if (refreshToken) {
+            const decoded = jwt.decode(refreshToken) as {id: string, exp: number} | null;
 
-    res.status(200).json({
-        status: "success",
-        message: "Logged out successfully."
-    })
+            if (decoded && decoded.exp) {
+                const expiresAt = new Date(decoded.exp * 1000);
+                const now = new Date();
+
+                // store token in blockList
+                if (expiresAt > now) {
+                    await prisma.blocklist.create({
+                        data: {
+                            userId: decoded.id,
+                            token: refreshToken,
+                            expiresAt: expiresAt
+                        }
+                    })
+                }
+            }
+        }
+
+        res.clearCookie("accessToken", {
+            httpOnly: true,
+            secure: true,
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            path: "/",
+        });
+
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: true,
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            path: "/",
+        });
+
+        res.status(200).json({
+            status: "success",
+            message: "Logged out successfully."
+        })
+
+    } catch (err) {
+        res.status(500).json({
+            message: "Something went wrong."
+        })
+    }
+
 }

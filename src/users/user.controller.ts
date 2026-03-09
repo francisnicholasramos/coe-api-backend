@@ -16,14 +16,14 @@ export class UserContoller {
             res.clearCookie("accessToken", {
                 httpOnly: true,
                 secure: true,
-                sameSite: "none",
+                sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
                 path: "/",
             });
             res.clearCookie("refreshToken", {
                 httpOnly: true,
                 secure: true,
-                sameSite: "none",
-                path: "/refresh-token",
+                sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+                path: "/",
             });
 
             res.status(200).json({ 

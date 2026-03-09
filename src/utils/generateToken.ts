@@ -14,17 +14,17 @@ export const generateToken = (userId: string, res: Response) => {
 
     res.cookie("accessToken", accessToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
+        secure: process.env.NODE_ENV === "production" ? true : false,
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         path: "/",
-        maxAge: 1000 * 60 * 10
+        maxAge: 1000 * 60 * 15,
     });
 
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        path: "/refresh-token",
+        secure: process.env.NODE_ENV === "production" ? true : false,
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        path: "/",
         maxAge: 1000 * 60 * 60 * 24 * 7,
     });
 }
