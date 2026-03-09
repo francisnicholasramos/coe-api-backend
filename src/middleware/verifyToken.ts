@@ -12,7 +12,7 @@ export const verifyToken: RequestHandler = async (req, res, next) => {
     const token = accessToken || bearerToken;
 
     if (!token) {
-        return res.status(403).json({
+        return res.status(401).json({
             message: 'Authentication is required. Please log in first.'
         })
     }
