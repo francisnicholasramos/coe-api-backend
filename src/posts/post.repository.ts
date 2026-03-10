@@ -36,6 +36,9 @@ export const getPublicPosts = async () => {
                 }
             }
         },
+        orderBy: {
+            createdAt: 'desc'
+        }
     })
 }
 
