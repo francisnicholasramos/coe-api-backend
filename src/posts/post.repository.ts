@@ -36,9 +36,6 @@ export const getPublicPosts = async () => {
                 }
             }
         },
-        orderBy: {
-            createdAt: 'desc'
-        }
     })
 }
 
@@ -96,6 +93,7 @@ export const getPostById = async (id: string) => {
                     createdAt: true,
                     user: {
                         select: {
+                            id: true,
                             username: true
                         }
                     }
