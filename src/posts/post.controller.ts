@@ -68,8 +68,11 @@ export class PostController {
 
     getPostByIdHandler: RequestHandler = async (req, res, next) => {
         try {
+            const userId = req.user?.id
+
+            if (!userId) return res.sendStatus(401)
+
             const postId = req.params.postId as string
-            const userId = req.user.id as string
 
             if (!postId) return res.status(404).json({message: "Blog not found."})
 
@@ -144,7 +147,7 @@ export class PostController {
             const userId = req.user?.id;
 
             if (!userId) {
-                return res.status(401).json({message: "Unauthorized"});
+                return res.sendStatus(401)
             }
 
             const postId = req.params.postId as string;
@@ -180,9 +183,7 @@ export class PostController {
             const userId = req.user?.id;
 
             // Unauthorized 401
-            if (!userId) {
-                return res.status(401).json({message: "Unauthorized"});
-            }
+            if (!userId) return res.sendStatus(401)
 
             // Get id from request
             const postId = req.params.postId as string;
