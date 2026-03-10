@@ -13,7 +13,8 @@ export const verifyToken: RequestHandler = async (req, res, next) => {
 
     if (!token) {
         return res.status(401).json({
-            message: 'Authentication is required. Please log in first.'
+            message: 'Authentication is required. Please log in first.',
+            refreshable: false,
         })
     }
 
@@ -25,7 +26,8 @@ export const verifyToken: RequestHandler = async (req, res, next) => {
         // expired token
         if (err instanceof jwt.TokenExpiredError) {
             return res.status(401).json({
-                message: "Token expired."
+                message: "Token expired.",
+                refreshable: true
             })
         }
 
