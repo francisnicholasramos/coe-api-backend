@@ -1,8 +1,26 @@
 import type {RequestHandler} from "express";
 import {changePasswordService} from "./user.service";
 import {ChangePasswordSchema} from "./user.schema";
+import prisma from "../database/prismaClient";
 
 export class UserContoller {
+    getUser: RequestHandler = async (req, res) => {
+        const userId = req.user?.id;
+
+        if (!userId) return res.sendStatus(401);
+
+        const user = await prisma.user.findUnique({
+            where: {
+                id: userId
+            },
+            select: {
+                id: true
+            }
+        })
+
+        res.json({user})
+    }
+
     changePassword: RequestHandler = async (req, res) => {
         try {
             const userId = req.user.id; 

@@ -6,8 +6,13 @@ const router = Router();
 
 const user = new UserContoller;
 
+router.get("/user/me",
+    verifyToken,
+    user.getUser
+)
+
 router.put(
-    "/change-password", 
+    "/user/change-password", 
     verifyToken,
     user.changePassword
 );
