@@ -1,7 +1,7 @@
 import type {RequestHandler} from "express";
 import {changePasswordService} from "./user.service";
 import {ChangePasswordSchema} from "./user.schema";
-import prisma from "../database/prismaClient";
+import {getUserById} from "./user.repository";
 
 export class UserContoller {
     getUser: RequestHandler = async (req, res) => {
@@ -9,14 +9,7 @@ export class UserContoller {
 
         if (!userId) return res.sendStatus(401);
 
-        const user = await prisma.user.findUnique({
-            where: {
-                id: userId
-            },
-            select: {
-                id: true
-            }
-        })
+        const user = await getUserById(userId, 'userIdOnly')
 
         res.json({user})
     }

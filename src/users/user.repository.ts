@@ -1,5 +1,13 @@
 import prisma from "../database/prismaClient";
 
+type UserField = 'default' | 'userIdOnly' | 'withPassword'
+
+const fields = {
+    default: undefined,
+    userIdOnly: {id: true},
+    withPassword: {id: true, password: true}
+}
+
 export const createUser = async (
     username: string, 
     password: string,
@@ -26,13 +34,10 @@ export const updateUserPassword = async (
             password: newPassword }
     })
 }
-
-export const findUserById = async (userId: string) => {
+    
+export const getUserById = async (id: string, options: UserField='default') => {
     return await prisma.user.findUnique({
-        where: {id: userId},
-        select: {id: true, password: true}
+        where: {id},
+        select: fields[options]
     })
 }
-    
-export const getUserById = async (id: string) =>
-    prisma.user.findUnique({where: {id}})

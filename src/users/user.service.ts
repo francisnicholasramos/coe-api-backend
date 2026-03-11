@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { findUserById, updateUserPassword } from "./user.repository";
+import { getUserById, updateUserPassword } from "./user.repository";
 
 export const changePasswordService = async (
     userId: string,
@@ -11,7 +11,7 @@ export const changePasswordService = async (
         throw new Error("New password and confirm password do not match");
     }
 
-    const user = await findUserById(userId);
+    const user = await getUserById(userId, 'withPassword');
     if (!user) {
         throw new Error("User not found");
     }
