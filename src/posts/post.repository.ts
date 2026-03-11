@@ -23,7 +23,8 @@ export const getPublicPosts = async () => {
         include: {
             user: {
                 select: {
-                    username: true
+                    username: true,
+                    avatar: true
                 }
             },
             comments: {
@@ -86,7 +87,8 @@ export const getPostById = async (id: string) => {
             user: {
                 select: {
                     id: true,
-                    username: true
+                    username: true,
+                    avatar: true
                 }
             },
             comments: {

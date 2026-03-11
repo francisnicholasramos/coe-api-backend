@@ -1,5 +1,6 @@
 import type {RequestHandler} from "express";
 import cloudinary from "../config/cloudinaryConfig";
+import {uploadAvatarService} from "../users/user.service";
 
 export const handleImageUpload: RequestHandler  = (req, res) => { 
     const stream = cloudinary.uploader.upload_stream(
@@ -14,6 +15,32 @@ export const handleImageUpload: RequestHandler  = (req, res) => {
     ).end(req.file?.buffer)
 
     return stream;
+}
+
+export const handleAvatarUpload: RequestHandler = async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+
+        const stream = cloudinary.uploader.upload_stream(
+            {
+                folder: `${process.env.CLOUDINARY_SECRET_FOLDER}`,
+                allowed_formats: ["jpg", "jpeg", "png", "gif", "webp"],
+            },
+            async (error, result) => {
+                if (error) {
+                    return res.status(500).json({
+                        error: error.message
+                    })
+                }
+                await uploadAvatarService(userId, result!.secure_url)
+                res.status(200).end()
+            }
+        ).end(req.file?.buffer)
+
+        return stream;
+    } catch (err) {
+        next(err)
+    }
 }
 
 export const handleDeleteUponPost: RequestHandler = async (req, res) => {

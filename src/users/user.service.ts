@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { getUserById, updateUserPassword } from "./user.repository";
+import { getUserById, updateUserPassword, uploadUserAvatar } from "./user.repository";
 
 export const changePasswordService = async (
     userId: string,
@@ -25,3 +25,16 @@ export const changePasswordService = async (
 
     await updateUserPassword(userId, hashedPassword);
 };
+
+export const uploadAvatarService = async (
+    userId: string,
+    url: string
+) => {
+    const user = await getUserById(userId);
+
+    if (!user) {
+        throw new Error("User not found.");
+    }
+
+    await uploadUserAvatar(userId, url)
+}

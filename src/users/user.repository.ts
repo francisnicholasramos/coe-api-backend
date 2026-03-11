@@ -41,3 +41,17 @@ export const getUserById = async (id: string, options: UserField='default') => {
         select: fields[options]
     })
 }
+
+export const uploadUserAvatar = async (
+    userId: string, 
+    imageUrl: string
+) => {
+    return await prisma.user.update({
+        where: {
+            id: userId
+        },
+        data: {
+            avatar: imageUrl
+        }
+    })
+}

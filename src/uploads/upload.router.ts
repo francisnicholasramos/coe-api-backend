@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { handleImageUpload, handleDeleteUponPost } from "./upload.controller";
+import {verifyToken} from "../middleware/verifyToken";
+import { handleImageUpload, handleDeleteUponPost, handleAvatarUpload} from "./upload.controller";
 import multer from "multer";
 
 const router = Router();
@@ -11,6 +12,13 @@ router.post(
     upload.single('file'),
     handleImageUpload
 );
+
+router.post(
+    "/uploadAvatar",
+    verifyToken,
+    upload.single('file'),
+    handleAvatarUpload
+)
 
 router.delete(
     "/uploadImage",
