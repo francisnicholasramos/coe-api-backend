@@ -14,6 +14,7 @@ model User {
   avatar   String?
   email    String @unique
   posts    Post[]
+  likes    Like[]
   comments Comment[]
   blocklist Blocklist[]
 
@@ -27,6 +28,7 @@ model Post {
   published Boolean   @default(false)
   createdAt DateTime  @default(now())
   userId    String
+  likes     Like[]
   comments  Comment[]
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -47,6 +49,19 @@ model Comment {
   @@index([userId])
   @@index([postId])
   @@map("comments")
+}
+
+model Like {
+  id String @id @default(uuid())
+  userId String
+  postId String
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])  // ONE like per user per post
+  @@index([postId])
+  @@index([userId])
+  @@map("likes")
 }
 
 model Blocklist {
