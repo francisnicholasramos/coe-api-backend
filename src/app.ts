@@ -38,7 +38,7 @@ app.use(cors({
 }))
 
 // rate limiting
-app.use(globalLimiter)
+// app.use(globalLimiter)
 
 // base routes
 app.use(auth)
