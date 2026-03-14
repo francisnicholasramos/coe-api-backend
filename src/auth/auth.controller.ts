@@ -58,13 +58,13 @@ export const login: RequestHandler = async (req, res) => {
         })
 
         if (!user) {
-            return res.status(404).json({message: "Invalid email or password."})
+            return res.status(404).json({message: "Invalid username or password."})
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password)
 
         if (!isPasswordValid) {
-            return res.status(401).json({message: "Invalid email or password."})
+            return res.status(401).json({message: "Invalid username or password."})
         }
         
         generateToken(user.id, res)
