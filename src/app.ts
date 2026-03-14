@@ -8,6 +8,7 @@ import {Request, Response, NextFunction} from "express";
 import auth from "./auth/auth.router";
 import userRoutes from "./users/user.router";
 import postRoutes from "./posts/post.router";
+import likeRoutes from "./likes/like.router";
 import commentRoutes from "./comments/comment.router"
 import uploadRoutes from "./uploads/upload.router"
 
@@ -42,6 +43,7 @@ app.use(globalLimiter)
 // base routes
 app.use(auth)
 app.use("/", userRoutes)
+app.use("/", likeRoutes)
 app.use("/", postRoutes)
 app.use("/", commentRoutes)
 app.use("/", uploadRoutes)

@@ -91,6 +91,13 @@ export const getPostById = async (id: string) => {
                     avatar: true
                 }
             },
+            likes: {
+                select: {
+                    id: true,
+                    userId: true,
+                    postId: true
+                }
+            },
             comments: {
                 select: {
                     id: true,

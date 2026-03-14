@@ -4,7 +4,7 @@ type UserField = 'default' | 'userIdOnly' | 'withPassword'
 
 const fields = {
     default: undefined,
-    userIdOnly: {id: true, avatar: true},
+    userIdOnly: {id: true, username: true, email: true, avatar: true},
     withPassword: {id: true, password: true}
 }
 
