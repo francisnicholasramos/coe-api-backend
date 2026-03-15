@@ -39,6 +39,8 @@ Built with TypeScript + Express backend for a blogging platform with authenticat
 | /signup                     | POST      | Create account                                 |
 | /change-password            | PUT       | Change password                                |
 | /profile                    | GET       | User Profile                                   |
+| /like                       | GET       | Like blog posts                                |
+
 
 ### Key Features
 * **Blog Post Management**: Full CRUD operations - create, read, update, and delete posts.
