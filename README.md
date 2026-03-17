@@ -46,8 +46,8 @@ Built with TypeScript + Express backend for a blogging platform with authenticat
 ### Key Features
 * **Blog Post Management**: Full CRUD operations — create, read, update, and delete posts.
 * **Post Likes**: Users can like blog posts.
-* **Commenting System**: Add comments to posts.
-* **Publishing System**: Draft and published post states.
+* **Comments**: Add comments to posts.
+* **Draft and Publish**: Draft and published post states.
 * **Image Upload**: Support upload and manage images via Cloudinary as bucket storage.
 * **Search & Sorting**: Search and sort blog posts by title and content.
 
