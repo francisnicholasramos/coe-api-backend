@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet"; 
 import cookieParser from "cookie-parser";
-import {globalLimiter} from "./middleware/rateLimiter";
 import {Request, Response, NextFunction} from "express";
 
 import auth from "./auth/auth.router";
@@ -37,9 +36,6 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }))
 
-// rate limiting
-// app.use(globalLimiter)
-
 // base routes
 app.use(auth)
 app.use("/", userRoutes)
@@ -47,6 +43,13 @@ app.use("/", likeRoutes)
 app.use("/", postRoutes)
 app.use("/", commentRoutes)
 app.use("/", uploadRoutes)
+
+// 404 
+app.use((req: Request, res: Response) => {
+    res.status(404).json({
+        message: "Route not found."
+    });
+})
 
 // error handling
 app.use((
@@ -62,6 +65,7 @@ app.use((
             : err.message
     })
 })
+
 
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`)
