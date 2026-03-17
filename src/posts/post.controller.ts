@@ -54,6 +54,10 @@ export class PostController {
 
             const post = await getPostById(postId);
 
+            if (!post?.published) {
+                return res.sendStatus(403);
+            }
+
             if (post?.user.username !== username) {
                 return res.status(404).json({message: "Post not found for this user."})
             }
