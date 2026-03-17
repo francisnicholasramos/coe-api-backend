@@ -1,8 +1,24 @@
 import type {RequestHandler} from "express";
-import {toggleLike, getLikesCount} from "./like.repository";
+import {toggleLike, getLikesCount, getAllLikedPosts} from "./like.repository";
 import {getPostById} from "../posts/post.repository";
 
 export class LikeController {
+    getAllLikedPostsHandler: RequestHandler = async (req, res, next) => {
+        try {
+            const userId = req.user.id;
+
+            if (!userId) return res.sendStatus(401);
+
+            const likedPosts = await getAllLikedPosts(userId);
+
+            return res.status(200).json({
+                likedPosts
+            })
+        } catch (err) {
+            next(err)
+        }
+    }
+
     toggleLikeHandler: RequestHandler = async (req, res, next) => {
         try {
             const userId = req.user.id;

@@ -1,5 +1,20 @@
 import prisma from "../database/prismaClient";
 
+export const getAllLikedPosts = async (userId: string) => {
+    return await prisma.like.findMany({
+        where: {
+            userId
+        },
+        include: {
+            post: {
+                include: {
+                    user: true
+                }
+            }
+        }
+    })
+}
+
 export const toggleLike = async (postId: string, userId: string) => {
     const existingLike = await prisma.like.findUnique({
         where: {
@@ -38,15 +53,3 @@ export const getLikesCount = async (postId: string) => {
         }
     })
 }
-
-export const getLikeStatus = async (postId: string, userId: string) => {
-  const like = await prisma.like.findUnique({
-    where: {
-      userId_postId: {
-        userId,
-        postId
-      }
-    }
-  });
-  return !!like;
-};

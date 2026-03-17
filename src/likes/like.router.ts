@@ -12,6 +12,12 @@ router.get(
     like.getLikesCountHandler
 )
 
+router.get(
+    "/liked-posts",
+    verifyToken,
+    like.getAllLikedPostsHandler
+)
+
 router.post(
     "/likes/:postId",
     likeLimiter,
