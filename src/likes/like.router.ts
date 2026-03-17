@@ -7,18 +7,12 @@ const router = Router();
 const like = new LikeController;
 
 router.get(
-    "/posts/:postId/likes/count",
+    "/likes/:postId",
     like.getLikesCountHandler
 )
 
-router.get(
-    "/posts/:postId/like/status",
-    verifyToken,
-    like.getLikeStatusHandler
-)
-
 router.post(
-    "/posts/:postId/like",
+    "/likes/:postId",
     verifyToken,
     like.toggleLikeHandler
 )
