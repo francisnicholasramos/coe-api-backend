@@ -39,6 +39,7 @@ Built with TypeScript + Express backend for a blogging platform with authenticat
 | /signup                     | POST      | Create account                                 |
 | /user/me                    | GET       | User Profile (requires login)                  |
 | /user/change-password       | PUT       | Change password (requires login)               |
+| /liked-posts                | GET       | Get all liked posts (requires login)           |
 | /likes/:postId              | GET       | Get likes counts                               |
 | /likes/:postId              | POST      | Like a post (requires login)                   |
 
