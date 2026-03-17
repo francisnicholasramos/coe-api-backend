@@ -28,7 +28,7 @@ Built with TypeScript + Express backend for a blogging platform with authenticat
 | /posts                      | POST      | Create new blog post (requires login)          |                
 | /@:username/:postId         | GET       | Retrieve specific blog post                    | 
 | /posts/:postId              | GET       | Retrieve blog post (requires login)            |              
-| /posts/:postId              | PUT/PATCH | Update blog post (requires login)              |
+| /posts/:postId              | PUT       | Update blog post (requires login)              |
 | /posts/:postId              | DELETE    | Delete blog post (requires login)              |
 | /comments                   | POST      | Create comment (requires login)                |         
 | /comments/:commentId        | PUT       | Update comment (requires login)                |
@@ -37,14 +37,16 @@ Built with TypeScript + Express backend for a blogging platform with authenticat
 | /uploadImage                | DELETE    | Delete image in cloudinary (requires login)    |
 | /login                      | POST      | Login                                          |
 | /signup                     | POST      | Create account                                 |
-| /change-password            | PUT       | Change password                                |
-| /profile                    | GET       | User Profile                                   |
-| /like                       | GET       | Like blog posts                                |
+| /user/me                    | GET       | User Profile (requires login)                  |
+| /user/change-password       | PUT       | Change password (requires login)               |
+| /likes/:postId              | GET       | Get likes counts                               |
+| /likes/:postId              | POST      | Like a post (requires login)                   |
 
 
 ### Key Features
-* **Blog Post Management**: Full CRUD operations - create, read, update, and delete posts.
-* **Commenting System**: Add comments to posts with PUBLIC and PRIVATE comment types.
+* **Blog Post Management**: Full CRUD operations — create, read, update, and delete posts.
+* **Post Likes**: Users can like blog posts.
+* **Commenting System**: Add comments to posts.
 * **Publishing System**: Draft and published post states.
 * **Image Upload**: Support upload and manage images via Cloudinary as bucket storage.
 * **Search & Sorting**: Search and sort blog posts by title and content.
