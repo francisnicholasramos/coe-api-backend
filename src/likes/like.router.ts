@@ -1,6 +1,7 @@
 import {Router} from "express";
 import {LikeController} from "./like.controller";
 import {verifyToken} from "../middleware/verifyToken";
+import {likeLimiter} from "../middleware/rateLimiter";
 
 const router = Router();
 
@@ -13,6 +14,7 @@ router.get(
 
 router.post(
     "/likes/:postId",
+    likeLimiter,
     verifyToken,
     like.toggleLikeHandler
 )

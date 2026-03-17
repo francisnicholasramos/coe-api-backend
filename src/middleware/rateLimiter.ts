@@ -1,12 +1,5 @@
 import {rateLimit} from "express-rate-limit";
 
-export const globalLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    limit: 200, // 200 overall requests per IP
-    standardHeaders: true, // Shows RateLimit-* headers
-    legacyHeaders: false
-})
-
 export const authLogInLimiter = rateLimit({
     windowMs: 2 * 60 * 1000, // 2 minutes
     limit: 5,
@@ -23,6 +16,12 @@ export const authSignInLimiter = rateLimit({
 export const writeLimiter = rateLimit({
     windowMs: 30 * 60 * 1000, // 30 minutes
     limit: 15,
+    message: { message: "Request blocked: rate limit reached." }
+})
+
+export const likeLimiter = rateLimit({
+    windowMs: 10 * 60 * 1000,
+    limit: 20,
     message: { message: "Request blocked: rate limit reached." }
 })
 
