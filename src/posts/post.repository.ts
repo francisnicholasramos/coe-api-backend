@@ -27,6 +27,11 @@ export const getPublicPosts = async () => {
                     avatar: true
                 }
             },
+            likes: {
+                select: {
+                    id: true,
+                }
+            },
             comments: {
                 select: {
                     id: true,
