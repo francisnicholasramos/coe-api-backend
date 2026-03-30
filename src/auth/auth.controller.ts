@@ -108,7 +108,7 @@ export const refresh: RequestHandler = async (req, res) => {
         const newAccessToken = jwt.sign(
             { id: decoded.id }, 
             process.env.JWT_SECRET as string, 
-            { expiresIn: "15s" }
+            { expiresIn: "15m" }
         );
 
         res.cookie("accessToken", newAccessToken, {
@@ -116,7 +116,7 @@ export const refresh: RequestHandler = async (req, res) => {
             secure: process.env.NODE_ENV === "production" ? true : false,
             sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             path: "/",
-            maxAge: 1000 * 15,
+            maxAge: 1000 * 60 * 15,
         });
 
         res.status(200).json({ 
