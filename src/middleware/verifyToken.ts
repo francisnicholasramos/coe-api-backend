@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 
 export const verifyToken: RequestHandler = async (req, res, next) => {
     const accessToken = req.cookies?.accessToken;
+    const refreshToken = req.cookies?.refreshToken;
 
     // Authorization: Bearer <token> (OPTION 2)
     const bearerHeader = req.headers['authorization']
@@ -14,7 +15,7 @@ export const verifyToken: RequestHandler = async (req, res, next) => {
     if (!token) {
         return res.status(401).json({
             message: 'Authentication is required. Please log in first.',
-            refreshable: false,
+            refreshable: !!refreshToken,
         })
     }
 
